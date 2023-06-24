@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Login from './Components/Login';
+import { useState } from 'react';
+import UserPage from './UserPage';
+import LoginPage from './LoginPage';
+import { auth } from './Firebase/FirebaseModule';
+import { User } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <Login/>
-      </header>
+export interface manageUser{
+  callback: React.Dispatch<React.SetStateAction<User|undefined>>
+}
+
+function App(){
+
+  const[user,setUser] = useState<User>();
+
+  let page = <LoginPage callback={setUser}/>
+
+  if(user){
+    page = <UserPage callback = {setUser}/>
+  }
+
+  return(
+    <div>
+      {page}
     </div>
   );
 }
