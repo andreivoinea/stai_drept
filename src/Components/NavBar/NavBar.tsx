@@ -29,6 +29,7 @@ function NavBar(){
                         <SideButton className='dashboard' icon={dashboardIcon} text = "Dashboard" navPath='dashboard'/>
                         <SideButton className='check-up' icon={checkupIcon} text = "Programari si Consultatii" navPath='programari'/>
                         <SideButton className='work-out' icon={workoutIcon} text = "Work-out" navPath='work-out'/>
+                        <SideButton className='work-out' icon={workoutIcon} text = "Playlist" navPath='playlist'/>
                 
                     </div>
 

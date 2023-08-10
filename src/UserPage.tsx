@@ -10,7 +10,7 @@ function UserPage(props:manageUser){
       <Router>
         <NavBar/>
         <PageNav/>
-        <UserDisplay firstName = "Andrei" lastName='Voinea' id = "1" type = {UserType.Utilizator} callback = {props.callback}/>
+        {/* <UserDisplay firstName = "Andrei" lastName='Voinea' id = "1" type = {UserType.Utilizator} callback = {props.callback}/> */}
       </Router>     
     </div> 
     )

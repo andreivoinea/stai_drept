@@ -6,7 +6,8 @@ import { User } from 'firebase/auth';
 
 export enum UserType{
     Antrenor,
-    Utilizator
+    Utilizator,
+    Doctor
 }
 
 interface userData{

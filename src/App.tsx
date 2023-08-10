@@ -2,9 +2,11 @@ import './App.css';
 import { useState } from 'react';
 import UserPage from './UserPage';
 import LoginPage from './LoginPage';
-import { auth } from './Firebase/FirebaseModule';
+import { WriteFirestore, auth } from './Firebase/FirebaseModule';
 import { User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+
+import logo from './images/pngs/logo_alb_misto.png';
 
 export interface manageUser{
   callback: React.Dispatch<React.SetStateAction<User|undefined>>
@@ -21,10 +23,12 @@ function App(){
   }
 
   return(
-    <div>
+    <div className=' overflow-hidden'>
       {page}
     </div>
   );
 }
+
+
 
 export default App;

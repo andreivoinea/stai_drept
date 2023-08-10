@@ -1,8 +1,8 @@
 import {initializeApp} from 'firebase/app'
 import {getAnalytics} from 'firebase/analytics'
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword, User  } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes  } from "firebase/storage";
+import { getFirestore, collection, addDoc, setDoc, doc, getDocs } from "firebase/firestore";
+import { StorageReference, getDownloadURL, getStorage, listAll, ref, uploadBytes  } from "firebase/storage";
 
 const firebaseConfig =  {
     apiKey: "AIzaSyCd3rGs6ULa_fTg8FrFnvPQSblxTf1ZMtc",
@@ -25,7 +25,7 @@ createUserWithEmailAndPassword(auth, email, password)
 .then((userCredential) => {
   // Signed in 
   const user = userCredential.user;
-
+  WriteFirestore("users/"+user.email,{email:user.email,uid:user.uid,role:"client"});
   console.log("userCreds")
   console.log(user);
   // ...
@@ -99,4 +99,54 @@ export function DownloadWorkout(studentId:string){
         break;
     }
   });
+}
+
+export async function GetAllFilesStorage(path:string):Promise<StorageReference[]>{
+  const listRef = ref(storage, path);
+
+  var allFiles:StorageReference[] = [];
+
+  const listRes = await listAll(listRef);
+
+  let promises:Promise<StorageReference[]>[] = [];
+
+  listRes.prefixes.forEach((folderRef) => {
+    promises.push(GetAllFilesStorage(path + folderRef.name + "/"));
+  });
+
+  let results = await Promise.all(promises);
+
+  results.forEach((result)=>{
+    allFiles = allFiles.concat(result);
+  });
+
+  allFiles = allFiles.concat(listRes.items);
+
+  return allFiles;
+}
+
+export async function WriteFirestore(path:string, data:any){
+  const docRef = doc(db, path);
+  await setDoc(docRef, data);
+}
+
+export async function GetAllUsers(){
+  const usersRef = collection(db, "users");
+  const usersSnap = await getDocs(usersRef);
+  const users = usersSnap.docs.map(doc => doc.data());
+  return users;
+}
+
+export async function GetAllSeries(){
+  const seriesRef = collection(db, "series");
+  const seriesSnap = await getDocs(seriesRef);
+  const series = seriesSnap.docs.map(doc => doc.data());
+  return series;
+}
+
+export async function GetItems(serie:string){
+  const itemsRef = collection(db,"series",serie,"items");
+  const itemsSnap = await getDocs(itemsRef);
+  const items = itemsSnap.docs.map(doc => doc.data());
+  return items;
 }
