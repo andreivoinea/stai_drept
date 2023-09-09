@@ -108,20 +108,28 @@ export async function GetAllFilesStorage(path:string):Promise<StorageReference[]
 
   const listRes = await listAll(listRef);
 
+  if(listRes.prefixes.length == 0){
+    return [];
+  }
+
   let promises:Promise<StorageReference[]>[] = [];
+
+  console.log("prefix",listRes.prefixes);
 
   listRes.prefixes.forEach((folderRef) => {
     promises.push(GetAllFilesStorage(path + folderRef.name + "/"));
   });
 
   let results = await Promise.all(promises);
-
   results.forEach((result)=>{
     allFiles = allFiles.concat(result);
   });
-
   allFiles = allFiles.concat(listRes.items);
 
+  if(allFiles.length == 0)
+  return listRes.prefixes;
+
+  
   return allFiles;
 }
 

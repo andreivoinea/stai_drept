@@ -6,7 +6,11 @@ import penLinePic from '../../../../images/svgs/pen-line-svgrepo-com.svg';
 import PlaylistFolder from '../DBNav/PlaylistFolder';
 import { DocumentData } from 'firebase/firestore';
 
-function Workout(){
+interface WorkoutProps{
+    callback:React.Dispatch<React.SetStateAction<Serie | undefined>>,
+}
+
+function Workout(props:WorkoutProps){
 
     const [serieCurenta,setSerieCurenta] = useState<Serie>(new Serie('Serie Noua'));
     const [editSerie,setEditSerie] = useState<boolean>(false);
@@ -58,7 +62,7 @@ function Workout(){
     let serieCurentaJSX = <div className='flex font-bold'>{serieCurenta.name}</div>;
 
     if(editSerie){
-        serieCurentaJSX = <input className='flex font-bold focus pl-1' type = 'text' autoFocus placeholder={serieCurenta.name} onKeyDown={(ev) => {if(ev.key === "Enter")setEditSerie(false);}} onBlur = {(ev) => {setEditSerie(false);}} onChange={(e) => {serieCurenta.name = e.target.value;}}/>
+        serieCurentaJSX = <input className='flex font-bold focus pl-1' type = 'text' autoFocus placeholder={serieCurenta.name} onKeyDown={(ev) => {if(ev.key === "Enter")setEditSerie(false);}} onBlur = {(ev) => {setEditSerie(false);}} onChange={(e) => {serieCurenta.name = e.target.value;props.callback(serieCurenta);}}/>
     }
 
     return( 

@@ -12,10 +12,6 @@ function PlaylistFolder(props:playlistFolder){
 
     const [name,setName] = useState<string>(props.name);
 
-    // const handleOnSubmit = event => {
-    //     setName(event.target.value);
-    // }
-
     let nameJSX = <div>{props.name}</div>;
     if(props.isInput){
         nameJSX = <input className='text-black pl-1' type='text' placeholder={props.name} autoFocus onKeyDown={(ev) => {if(ev.key === "Enter" && props.onBlur) props.onBlur(name);}} onChange={(ev) => setName(ev.target.value)} onBlur={() => props.onBlur? props.onBlur(name):null}></input>

@@ -4,7 +4,12 @@ import { GetAllSeries, GetAllUsers } from "../../../../Firebase/FirebaseModule";
 import { User } from "firebase/auth";
 import userPic from '../../../../images/svgs/profile-circle-svgrepo-com.svg';
 
-function WorkoutDB(){
+interface wdbprops{
+    serie:Serie | undefined;
+    clearSerieAfterAdd:React.Dispatch<React.SetStateAction<Serie | undefined>>
+}
+
+function WorkoutDB(props:wdbprops){
 
     const [utilizatori,setUtilizatori] = useState<boolean>(false);
     const [emails,setEmails] = useState<string[]>([]);
@@ -29,6 +34,13 @@ function WorkoutDB(){
     useEffect(() => {
         console.log(emails);
     },[emails]);
+
+    useEffect(() =>{
+        if(props.serie != null){
+            series.push(props.serie);
+            props.clearSerieAfterAdd(undefined);
+        } 
+    },[props.serie]);
 
     let SeriiButton = 
     <button className='flex w-full font-bold border-r-2 border-slate-500 text-center place-content-center rounded-tl-3xl bg-red-500' onClick={() =>{setUtilizatori(false)}}>

@@ -1,4 +1,4 @@
-import React, { DragEventHandler, useEffect, useState } from 'react';
+import React, { ChangeEvent, DragEventHandler, RefObject, useEffect, useRef, useState } from 'react';
 import { GetAllFilesStorage } from '../../../../Firebase/FirebaseModule';
 
 import backPic from '../../../../images/svgs/backward-svgrepo-com.svg';
@@ -10,9 +10,15 @@ function FolderStructure(){
     const [rootFolder,setRootFolder] = useState<Folder>(new Folder(['root']));
     const [currentFolder,setCurrentFolder] = useState<Folder>(rootFolder);
     const [newFolder,addNewFolder] = useState<string>('');
-
+    const inputFile = useRef<HTMLInputElement>(null);
+    const [, updateState] = React.useState({});
+    const forceUpdate = React.useCallback(() => updateState({}), []);
+    
     useEffect(()=>{
         GetAllFilesStorage('/').then((res)=>{ 
+
+            console.log("gotem",res);
+
             let root = new Folder(['root']);
             //console.log(res); 
             res.forEach((ref)=>{
@@ -42,6 +48,15 @@ function FolderStructure(){
         e.dataTransfer.setData('itemPath',path);
     }
 
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            console.log(e.target.files[0].name);
+          currentFolder.Add([e.target.files[0].name]);
+          console.log(currentFolder.items);
+          forceUpdate();
+        }
+    };
+
     return( 
     <div className = 'folderStructure flex flex-col bg-slate-300 min-w-[400px] max-w-[400px] w-full border-slate-500 border-2 rounded-3xl m-2'>
         <div className='title-bar flex flex-row border-b-2 border-slate-500'>
@@ -65,8 +80,8 @@ function FolderStructure(){
             <button className='border-r-2 w-full border-slate-500 bg-blue-300 rounded-bl-3xl' onClick={() => {addNewFolder('New Folder')}}>
                 Add Folder
             </button>
-            <button className='w-full bg-green-400 rounded-br-3xl'>
-                Upload File
+            <button className='w-full bg-green-400 rounded-br-3xl' onClick={() => {inputFile.current?.click()}}>
+                Upload File<input type='file' className='hidden' onChange={handleFileChange} ref = {inputFile}/>
             </button>
         </div>
     </div>
@@ -88,7 +103,7 @@ class Folder{
         if(path.length === 1){
             return;
         } else if(path.length === 2){
-            if(path[1] !== '')
+            if(path[1] !== '' && path[1].includes('.'))
             this.items.push(path[1]);
         }
         else{
@@ -99,10 +114,10 @@ class Folder{
     public Add(path:string[]){
 
         if(path.length === 1){
-            if(path[0] !== ''){
-                this.items.push(path[0]);
+            if(path[0] !== '' && path[0].includes('.')){
+                    this.items.push(path[0]);
+                    return;
             }
-            return;
         }
 
         let stringMap = this.children.map((child)=>child.name);
